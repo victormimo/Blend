@@ -1,34 +1,45 @@
 import { SpaceCard } from "./components/SpaceCard";
-import { Grid } from "@chakra-ui/react";
-
-const property1 = {
-  imageUrl: "https://bit.ly/2Z4KKcF",
-  imageAlt: "Rear view of modern home with pool",
-  beds: 3,
-  baths: 2,
-  title: "Modern home in city center in the heart of historic Los Angeles",
-  formattedPrice: "$1,900.00",
-  reviewCount: 34,
-  rating: 4,
-};
-
-const property2 = {
-  imageUrl: "https://bit.ly/2Z4KKcF",
-  imageAlt: "Rear view of modern home with pool",
-  beds: 3,
-  baths: 2,
-  title: "Modern home in city center in the heart of historic Los Angeles",
-  formattedPrice: "$2,100.00",
-  reviewCount: 2,
-  rating: 2,
-};
+import { Chair } from "./components/Chair";
+import { Grid, Box, Flex, Spacer } from "@chakra-ui/react";
 
 const App = () => {
   return (
-    <Grid>
-      <SpaceCard {...property1} />
-      <SpaceCard {...property2} />
-    </Grid>
+    <Flex
+      bg="gray.100"
+      direction="row"
+      w="100%"
+      h="75vh"
+      align="center"
+      justify="center"
+    >
+      <Spacer />
+      <Flex
+        bg="gray.200"
+        direction="row"
+        w="40%"
+        h="50vh"
+        align="center"
+        justify="space-evenly"
+      >
+        <Chair />
+        <Chair />
+        <Chair />
+      </Flex>
+      <Spacer />
+      <Flex
+        bg="blue.100"
+        direction="column"
+        w="40%"
+        h="50vh"
+        align="center"
+        justify="space-evenly"
+      >
+        <Chair />
+        <Chair />
+        <Chair />
+      </Flex>
+      <Spacer />
+    </Flex>
   );
 };
 
