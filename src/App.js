@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { SpaceCard } from "./components/SpaceCard";
+import { Grid } from "@chakra-ui/react";
 
-function App() {
+const property1 = {
+  imageUrl: "https://bit.ly/2Z4KKcF",
+  imageAlt: "Rear view of modern home with pool",
+  beds: 3,
+  baths: 2,
+  title: "Modern home in city center in the heart of historic Los Angeles",
+  formattedPrice: "$1,900.00",
+  reviewCount: 34,
+  rating: 4,
+};
+
+const property2 = {
+  imageUrl: "https://bit.ly/2Z4KKcF",
+  imageAlt: "Rear view of modern home with pool",
+  beds: 3,
+  baths: 2,
+  title: "Modern home in city center in the heart of historic Los Angeles",
+  formattedPrice: "$2,100.00",
+  reviewCount: 2,
+  rating: 2,
+};
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Grid>
+      <SpaceCard {...property1} />
+      <SpaceCard {...property2} />
+    </Grid>
   );
-}
+};
 
 export default App;
