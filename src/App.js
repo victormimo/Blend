@@ -1,6 +1,6 @@
-import { SpaceCard } from "./components/SpaceCard";
-import { Chair } from "./components/Chair";
-import { Grid, Box, Flex, Spacer } from "@chakra-ui/react";
+import { Spacer, Flex } from "@chakra-ui/react";
+import { FirstWorkspace } from "./components/FirstWorkspace";
+import { SecondWorkspace } from "./components/SecondWorkspace";
 
 const App = () => {
   return (
@@ -13,31 +13,9 @@ const App = () => {
       justify="center"
     >
       <Spacer />
-      <Flex
-        bg="gray.200"
-        direction="row"
-        w="40%"
-        h="50vh"
-        align="center"
-        justify="space-evenly"
-      >
-        <Chair />
-        <Chair />
-        <Chair />
-      </Flex>
+      <FirstWorkspace />
       <Spacer />
-      <Flex
-        bg="blue.100"
-        direction="column"
-        w="40%"
-        h="50vh"
-        align="center"
-        justify="space-evenly"
-      >
-        <Chair />
-        <Chair />
-        <Chair />
-      </Flex>
+      <SecondWorkspace />
       <Spacer />
     </Flex>
   );
