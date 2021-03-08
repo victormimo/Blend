@@ -1,7 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 
 export const Chair = ({ orientation }) => {
-  console.log(orientation);
   if (orientation === "right") {
     return (
       <Flex direction="row" align="center">

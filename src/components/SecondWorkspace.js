@@ -1,5 +1,6 @@
-import { Flex, Image } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Chair } from "./Chair";
+import { Table } from "./Table";
 
 export const SecondWorkspace = () => {
   return (
@@ -22,15 +23,7 @@ export const SecondWorkspace = () => {
         <Chair orientation="left" />
         <Chair orientation="left" />
       </Flex>
-      <Flex
-        direction="column"
-        w="100%"
-        h="50vh"
-        align="center"
-        justify="space-evenly"
-      >
-        <Image src="Table-90.png" alt="table" />
-      </Flex>
+      <Table direction="column" imgSrc="Table-90.png" />
       <Flex
         direction="column"
         w="100%"
