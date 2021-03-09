@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Spacer, Flex, Box, Input, Button } from "@chakra-ui/react";
+import { Spacer, Flex, Box, Input, Button, Image } from "@chakra-ui/react";
 import { Office } from "./components/Office";
 import { connect } from "twilio-video";
 

@@ -1,7 +1,9 @@
 import { Component } from "react";
-import { Spacer, Flex, Button, Box } from "@chakra-ui/react";
+import { Spacer, Flex, Button, Box, Image } from "@chakra-ui/react";
 import { Table } from "./Table";
 import { Chair } from "./Chair";
+
+const streamButtons = ["video-icon.png", "audio-icon.png", "share-screen.png"];
 
 export class Office extends Component {
   constructor(props) {
@@ -28,7 +30,7 @@ export class Office extends Component {
 
   render() {
     const { returnToLobby, room, identity } = this.props;
-    console.log("room obj", room);
+
     return (
       <Box>
         <Flex
@@ -98,6 +100,23 @@ export class Office extends Component {
           </Flex>
           <Spacer />
         </Flex>
+        {streamButtons.map((name) => (
+          <Flex
+            h={20}
+            w={20}
+            border="1px"
+            borderColor="gray.900"
+            rounded={100}
+            justify="center"
+            align="center"
+            onClick={() => {
+              window.alert("clicked");
+            }}
+          >
+            <Image h={7} w={7} src={name} alt={name} />
+          </Flex>
+        ))}
+
         <Button onClick={returnToLobby}>Lobby</Button>
       </Box>
     );
