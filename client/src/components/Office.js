@@ -35,7 +35,7 @@ export class Office extends Component {
           bg="gray.100"
           direction="row"
           w="100%"
-          h="75vh"
+          h="100vh"
           align="center"
           justify="center"
         >
