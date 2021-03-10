@@ -6,7 +6,7 @@ import { Router } from "express";
 export default () => {
   const app = Router();
   /**
-   * We should implement our routes here! ...
+   * We should write our routes here! ...
    */
   return app;
 };

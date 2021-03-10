@@ -22,11 +22,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-**/.vscode
-
-# server side
-/server/typeorm.config.json
-/server/ormconfig.json
-
-**/dist

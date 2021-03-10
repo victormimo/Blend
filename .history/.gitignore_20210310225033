@@ -25,7 +25,7 @@ yarn-error.log*
 
 **/.vscode
 
-# server side
+# server side typeorm
 /server/typeorm.config.json
 /server/ormconfig.json
 

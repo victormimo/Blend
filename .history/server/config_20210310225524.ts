@@ -1,3 +1,5 @@
+import os from "os";
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
 export default {
   port: 5555,
   api: {

@@ -5,8 +5,10 @@ import { Router } from "express";
  */
 export default () => {
   const app = Router();
+
   /**
-   * We should implement our routes here! ...
+   * Loads Image Router
    */
+
   return app;
 };

@@ -4,6 +4,8 @@ import routes from "../api";
 import config from "../config";
 import errorHandler from "../utils/errorHandler";
 import { ExpressApp } from "@types";
+const ioclient = require("socket.io-client");
+import path from "path";
 
 export default ({ app }: ExpressApp) => {
   app.use(urlencoded({ extended: true }));
