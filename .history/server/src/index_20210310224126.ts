@@ -44,7 +44,7 @@ import loader from "./loaders";
 import express from "express";
 import config from "./config";
 import Logger from "./loaders/logger";
-const app = express();
+
 export default async () => {
   try {
     await loader({ expressApp: app });

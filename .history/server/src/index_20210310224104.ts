@@ -1,6 +1,6 @@
 // import cors from "cors";
 // import { jwt } from "twilio";
-// const app = express();
+const app = express();
 
 // const { AccessToken } = jwt;
 // const { VideoGrant } = AccessToken;
@@ -27,16 +27,16 @@
 //     }
 //   );
 
-//   token.identity = identity;
-//   const videoGrant = new VideoGrant({ room: roomName });
-//   token.addGrant(videoGrant);
+  token.identity = identity;
+  const videoGrant = new VideoGrant({ room: roomName });
+  token.addGrant(videoGrant);
 
-//   const tokenJwt = token.toJwt();
-//   const dataToSend = { tokenString: tokenJwt };
+  const tokenJwt = token.toJwt();
+  const dataToSend = { tokenString: tokenJwt };
 
-//   res.send(dataToSend);
-//   console.log(`issued token for ${identity} in room ${roomName}`);
-// });
+  res.send(dataToSend);
+  console.log(`issued token for ${identity} in room ${roomName}`);
+});
 
 // app.listen(8081, () => console.log("token server running on 8081"));
 import "reflect-metadata";
@@ -44,7 +44,6 @@ import loader from "./loaders";
 import express from "express";
 import config from "./config";
 import Logger from "./loaders/logger";
-const app = express();
 export default async () => {
   try {
     await loader({ expressApp: app });
