@@ -30,3 +30,4 @@ yarn-error.log*
 /server/ormconfig.json
 
 **/dist
+.history
