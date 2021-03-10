@@ -1,11 +1,10 @@
 {
     "name": "server",
     "version": "1.0.0",
-    "main": "dist/index.js",
     "license": "MIT",
     "scripts": {
         "watch": "tsc  -w",
-        "dev": "nodemon ./dist/index.js"
+        "dev": "dist/index.js"
     },
     "dependencies": {
         "cors": "^2.8.5",
