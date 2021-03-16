@@ -4,22 +4,97 @@ import { Table } from "./Table";
 import { Chair } from "./Chair";
 import { ParticipantInitialBubble } from "./ParticipantInitialBubble";
 import { Track } from "./Track";
+import { ChairHandler } from "../utils/ChairHandler";
+import { FirstWorkspace } from "./FirstWorkspace";
+import { SecondWorkspace } from "./SecondWorkspace";
 
-const streamButtons = ["video-icon.png", "audio-icon.png", "share-screen.png"];
+//const streamButtons = ["video-icon.png", "audio-icon.png", "share-screen.png"];
+const streamButtons = ["video", "audio", "share"];
 
 export class Office extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      seatSelected: false,
+      chairs: {
+        firstWorkspace: {
+          firstSet: {
+            chair1: {
+              id: "0down",
+              orientation: "down",
+            },
+            chair2: {
+              id: "1down",
+              orientation: "down",
+            },
+            chair3: {
+              id: "2down",
+              orientation: "down",
+            },
+          },
+          secondSet: {
+            chair4: {
+              id: "0up",
+              orientation: "up",
+            },
+            chair5: {
+              id: "1up",
+              orientation: "up",
+            },
+            chair6: {
+              id: "2up",
+              orientation: "up",
+            },
+          },
+        },
+        secondWorkspace: {
+          firstSet: {
+            chair7: {
+              id: "0left",
+              orientation: "left",
+            },
+            chair8: {
+              id: "1left",
+              orientation: "left",
+            },
+            chair9: {
+              id: "2left",
+              orientation: "left",
+            },
+            chair10: {
+              id: "3left",
+              orientation: "left",
+            },
+          },
+          secondSet: {
+            chair11: {
+              id: "0right",
+              orientation: "right",
+            },
+            chair12: {
+              id: "1right",
+              orientation: "right",
+            },
+            chair13: {
+              id: "2right",
+              orientation: "right",
+            },
+            chair14: {
+              id: "3right",
+              orientation: "right",
+            },
+          },
+        },
+      },
+      seatSelectedId: null,
       videoMuted: true,
       audioMuted: true,
       remoteParticipants: Array.from(this.props.room.participants.values()),
     };
 
+    this.handleSeatReset = this.handleSeatReset.bind(this);
     this.leaveRoom = this.leaveRoom.bind(this);
-    this.handleSelectSeat = this.handleSelectSeat.bind(this);
+    this.handleSelectedSeat = this.handleSelectedSeat.bind(this);
     this.toggleVideoMute = this.toggleVideoMute.bind(this);
   }
 
@@ -40,10 +115,14 @@ export class Office extends Component {
     this.leaveRoom();
   }
 
-  handleSelectSeat() {
-    this.setState({
-      seatSelected: !this.state.seatSelected,
-    });
+  handleSelectedSeat(id) {
+    console.log("chair selected!", id);
+    this.setState({ seatSelectedId: id });
+  }
+
+  handleSeatReset() {
+    console.log("seat resetted");
+    this.setState({ seatSelectedId: null });
   }
 
   toggleVideoMute() {
@@ -75,14 +154,6 @@ export class Office extends Component {
     this.props.returnToLobby();
   }
 
-  createChairs(number, orientation, handleSelectSeat) {
-    const chairArr = [];
-    for (let i = 0; i < number; i++) {
-      chairArr.push(Chair({ orientation, handleSelectSeat }));
-    }
-    return chairArr;
-  }
-
   render() {
     console.log("room obj", this.props.room);
     console.log("local participant", this.props.room.localParticipant);
@@ -95,7 +166,7 @@ export class Office extends Component {
       this.props.room.localParticipant.tracks.values()
     );
 
-    // track takes the track from the publication, publication is the higher step
+    // // track takes the track from the publication, publication is the higher step
     const localParticipantTracks = localParticipantExistingPubs.map(
       (pub) => pub.track
     );
@@ -110,142 +181,61 @@ export class Office extends Component {
       });
     }
 
-    // chair with all functionality
-    let hookedChair = [];
-    if (!this.state.videoMuted && this.state.seatSelected) {
-      hookedChair = localParticipantTracks.map((track) => (
-        <Track key={track} track={track} />
-      ));
-    } else if (this.state.seatSelected) {
-      hookedChair[0] = (
-        <ParticipantInitialBubble
-          identity={this.props.identity}
-          handleSelectedSeat={this.handleSelectSeat}
-        />
-      );
-    } else {
-      hookedChair[0] = (
-        <Chair orientation="down" handleSelectedSeat={this.handleSelectSeat} />
-      );
-    }
-
     return (
       <Box>
         <Flex
           bg="gray.100"
           direction="row"
           w="100%"
-          h="100vh"
+          h="75vh"
           align="center"
           justify="center"
         >
+          <FirstWorkspace
+            firstSet={this.state.chairs.firstWorkspace.firstSet}
+            secondSet={this.state.chairs.firstWorkspace.secondSet}
+            seatSelectedId={this.state.seatSelectedId}
+            localParticipantTracks={localParticipantTracks}
+            identity={this.props.identity}
+            handleSeatReset={this.handleSeatReset}
+            handleSelectSeat={this.handleSelectedSeat}
+          />
           <Spacer />
-          <Flex
-            direction="column"
-            w="40%"
-            h="50vh"
-            align="center"
-            justify="space-evenly"
-          >
-            <Flex
-              direction="row"
-              w="100%"
-              h="50vh"
-              align="center"
-              justify="space-evenly"
-            >
-              {/* {this.createChairs(3, "down", this.handleSelectSeat)} */}
-              {hookedChair.map((el) => (
-                <div>{el}</div>
-              ))}
-
-              {/* for curiosity lets test its disabled
-              {localParticipantTracks.map((track) => (
-                <Track key={track} track={track} />
-              ))} */}
-
-              {/* 
-              {this.state.seatSelected ? (
-                <ParticipantInitialBubble
-                  identity={this.props.identity}
-                  handleSelectedSeat={this.handleSelectSeat}
-                />
-              ) : (
-                <Chair
-                  orientation="down"
-                  handleSelectedSeat={this.handleSelectSeat}
-                />
-              )} */}
-
-              {/* {Array(3)
-                .fill(1)
-                .map((n, i) => (
-                  <Chair
-                    orientation="down"
-                    handleSelectedSeat={this.handleSelectSeat}
-                  />
-                ))} */}
-            </Flex>
-            <Table direction="row" imgSrc="Table.png" />
-            <Flex
-              direction="row"
-              w="100%"
-              h="50vh"
-              align="center"
-              justify="space-evenly"
-            >
-              {this.createChairs(3, "up")}
-            </Flex>
-          </Flex>
-          <Spacer />
-
-          <Flex
-            direction="row"
-            w="40%"
-            h="60vh"
-            align="center"
-            justify="space-evenly"
-          >
-            <Flex
-              direction="column"
-              w="100%"
-              h="60vh"
-              align="center"
-              justify="space-evenly"
-            >
-              {this.createChairs(4, "left")}
-            </Flex>
-            <Table direction="column" imgSrc="Table-90.png" />
-            <Flex
-              direction="column"
-              w="100%"
-              h="60vh"
-              align="center"
-              justify="space-evenly"
-            >
-              {this.createChairs(4, "right")}
-            </Flex>
-          </Flex>
-          <Spacer />
+          <SecondWorkspace
+            firstSet={this.state.chairs.secondWorkspace.firstSet}
+            secondSet={this.state.chairs.secondWorkspace.secondSet}
+            seatSelectedId={this.state.seatSelectedId}
+            localParticipantTracks={localParticipantTracks}
+            identity={this.props.identity}
+            handleSeatReset={this.handleSeatReset}
+            handleSelectSeat={this.handleSelectedSeat}
+          />
+          {/* Stream Buttons */}
         </Flex>
-        {/* Stream Buttons */}
-        {streamButtons.map((name) => (
-          <Flex
-            h={20}
-            w={20}
-            border="1px"
-            borderColor="gray.900"
-            rounded={100}
-            justify="center"
-            align="center"
-            onClick={this.toggleVideoMute}
-          >
-            {name}
-            {/* <Image h={7} w={7} src={name} alt={name} /> */}
-          </Flex>
-        ))}
+        <Flex
+          bg="blue.400"
+          direction="row"
+          align="center"
+          justify="space-evenly"
+        >
+          {streamButtons.map((name) => (
+            <Flex
+              h={20}
+              w={20}
+              border="1px"
+              borderColor="gray.900"
+              rounded={100}
+              justify="center"
+              align="center"
+              onClick={this.toggleVideoMute}
+            >
+              {name}
+              {/* <Image h={7} w={7} src={name} alt={name} /> */}
+            </Flex>
+          ))}
 
-        <Button onClick={this.props.returnToLobby}>Lobby</Button>
+          <Button onClick={this.props.returnToLobby}>Lobby</Button>
+        </Flex>
       </Box>
     );
   }

@@ -55,27 +55,36 @@ class App extends Component {
     return (
       <Box>
         {this.state.room === null ? (
-          <Box>
+        <Flex
+          height='100vh'
+          bg="purple.100"
+          direction="column"
+          align="center"
+          justify="space-evenly"
+        >
+          <Flex
+            direction="column"
+            align="center"
+          >
             <Input
               w={500}
               h={100}
+              bg="white"
               placeholder="Whatsya name?"
               //value={this.state.identity} <- why need??
               onChange={this.handleUpdateIdentity}
             />
-            <Spacer />
             <Button disabled={disabled} onClick={this.handleJoinRoom}>
               Join Room
             </Button>
-          </Box>
+          </Flex>
+        </Flex>  
         ) : (
-          <div>
             <Office
               room={this.state.room}
               returnToLobby={this.handleReturnToLobby}
               identity={this.state.identity}
             />
-          </div>
         )}
       </Box>
     );

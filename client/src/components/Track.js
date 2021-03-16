@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import React, { Component } from "react";
 
 export class Track extends Component {
@@ -16,6 +17,6 @@ export class Track extends Component {
   }
 
   render() {
-    return <div className="track" ref={this.ref}></div>;
+    return <Box ref={this.ref}></Box>;
   }
 }
