@@ -11,14 +11,18 @@ export default ({ app }: ExpressApp) => {
   app.enable("trust proxy");
   app.use(cors());
 
-  app.get("/", (_: Request, res: Response) => {});
+  app.get("/", (/*_: Request, _: Response*/) => {
+    /**
+     * TODO: write get reponsse
+     */
+  });
 
   /**
    * Status Health check
    * Method get
    * returns 200 status code
    */
-  app.get("/status", (_: Request, res: Response) => {
+  app.get("/status", (_, res: Response) => {
     res.status(200).end();
   });
 

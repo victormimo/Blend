@@ -7,7 +7,7 @@ if (envFound.error) {
 }
 
 export default {
-  port: parseInt(process.env.PORT as Number & string, 10),
+  port: parseInt(process.env.PORT as Number & string, 10) || 5555,
   logs: { level: process.env.LOG_LEVEL || "debug" },
   api: {
     prefix: "/api",
