@@ -1,5 +1,5 @@
 import cors from "cors";
-import { json, Request, Response, urlencoded } from "express";
+import { json, Response, urlencoded } from "express";
 import routes from "../api";
 import config from "../config";
 import errorHandler from "../utils/errorHandler";
