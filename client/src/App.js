@@ -26,22 +26,25 @@ class App extends Component {
   }
 
   async handleJoinRoom() {
-    // const response = await fetch(
-    //   `http://localhost:8081/token?identity=${this.state.identity}`
-    // );
-    // // res is a readableStream -> use json() to convert
-    // const responseData = await response.json();
-    // const { tokenString } = responseData;
+    const response = await fetch(
+      `http://localhost:8081/token?identity=${this.state.identity}`
+    );
+    // res is a readableStream -> use json() to convert
+    const responseData = await response.json();
+    const { tokenString } = responseData;
+    console.log("tokenstring", tokenString);
+    //const room = "sample";
+    console.log("right before room");
+    const room = await connect(
+      tokenString,
+      {
+        name: "cool-room",
+        audio: true,
+        video: true,
+      }
+    );
 
-    const room = "sample";
-    // const room = await connect(
-    //   tokenString,
-    //   {
-    //     name: "cool-room",
-    //     audio: true,
-    //     video: true,
-    //   }
-    // );
+    console.log("room", room);
 
     this.setState({ room: room });
   }

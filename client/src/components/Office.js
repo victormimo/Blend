@@ -159,10 +159,10 @@ export class Office extends Component {
                 <div>{el}</div>
               ))}
 
-              {/* for curiosity lets test its disabled */}
+              {/* for curiosity lets test its disabled
               {localParticipantTracks.map((track) => (
                 <Track key={track} track={track} />
-              ))}
+              ))} */}
 
               {/* 
               {this.state.seatSelected ? (
@@ -240,7 +240,8 @@ export class Office extends Component {
             align="center"
             onClick={this.toggleVideoMute}
           >
-            <Image h={7} w={7} src={name} alt={name} />
+            {name}
+            {/* <Image h={7} w={7} src={name} alt={name} /> */}
           </Flex>
         ))}
 
