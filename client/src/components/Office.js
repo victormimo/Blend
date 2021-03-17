@@ -1,92 +1,17 @@
-import React, { Component } from "react";
-import { Spacer, Flex, Button, Box, Image } from "@chakra-ui/react";
-import { Table } from "./Table";
-import { Chair } from "./Chair";
-import { ParticipantInitialBubble } from "./ParticipantInitialBubble";
-import { Track } from "./Track";
-import { ChairHandler } from "../utils/ChairHandler";
-import { FirstWorkspace } from "./FirstWorkspace";
-import { SecondWorkspace } from "./SecondWorkspace";
+import { Component } from "react";
+import { Flex, Button, Box, Image } from "@chakra-ui/react";
+import { Workspace } from "./Workspace";
+import chairsData from '../data/chairs'
+import { StreamButtons } from "./StreamButtons";
 
-//const streamButtons = ["video-icon.png", "audio-icon.png", "share-screen.png"];
-const streamButtons = ["video", "audio", "share"];
+const streamButtons = ["camera-icon.png", "mic-icon.png", "share-screen-icon.png"];
 
 export class Office extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      chairs: {
-        firstWorkspace: {
-          firstSet: {
-            chair1: {
-              id: "0down",
-              orientation: "down",
-            },
-            chair2: {
-              id: "1down",
-              orientation: "down",
-            },
-            chair3: {
-              id: "2down",
-              orientation: "down",
-            },
-          },
-          secondSet: {
-            chair4: {
-              id: "0up",
-              orientation: "up",
-            },
-            chair5: {
-              id: "1up",
-              orientation: "up",
-            },
-            chair6: {
-              id: "2up",
-              orientation: "up",
-            },
-          },
-        },
-        secondWorkspace: {
-          firstSet: {
-            chair7: {
-              id: "0left",
-              orientation: "left",
-            },
-            chair8: {
-              id: "1left",
-              orientation: "left",
-            },
-            chair9: {
-              id: "2left",
-              orientation: "left",
-            },
-            chair10: {
-              id: "3left",
-              orientation: "left",
-            },
-          },
-          secondSet: {
-            chair11: {
-              id: "0right",
-              orientation: "right",
-            },
-            chair12: {
-              id: "1right",
-              orientation: "right",
-            },
-            chair13: {
-              id: "2right",
-              orientation: "right",
-            },
-            chair14: {
-              id: "3right",
-              orientation: "right",
-            },
-          },
-        },
-      },
-      seatSelectedId: null,
+      selectedSeatId: null,
       videoMuted: true,
       audioMuted: true,
       remoteParticipants: Array.from(this.props.room.participants.values()),
@@ -117,12 +42,12 @@ export class Office extends Component {
 
   handleSelectedSeat(id) {
     console.log("chair selected!", id);
-    this.setState({ seatSelectedId: id });
+    this.setState({ selectedSeatId: id });
   }
 
   handleSeatReset() {
     console.log("seat resetted");
-    this.setState({ seatSelectedId: null });
+    this.setState({ selectedSeatId: null });
   }
 
   toggleVideoMute() {
@@ -161,6 +86,7 @@ export class Office extends Component {
       "audio track",
       Array.from(this.props.room.localParticipant.audioTracks)
     );
+    console.log('selected id', this.state.selectedSeatId)
 
     const localParticipantExistingPubs = Array.from(
       this.props.room.localParticipant.tracks.values()
@@ -191,48 +117,41 @@ export class Office extends Component {
           align="center"
           justify="center"
         >
-          <FirstWorkspace
-            firstSet={this.state.chairs.firstWorkspace.firstSet}
-            secondSet={this.state.chairs.firstWorkspace.secondSet}
-            seatSelectedId={this.state.seatSelectedId}
+          <Workspace
+            firstSet={chairsData.firstWorkspace.firstSet}
+            secondSet={chairsData.firstWorkspace.secondSet}
+            workspaceDirection='column'
+            chairsDirection='row'
+            tableSrc="Table.png"
+            selectedSeatId={this.state.selectedSeatId}
             localParticipantTracks={localParticipantTracks}
             identity={this.props.identity}
             handleSeatReset={this.handleSeatReset}
-            handleSelectSeat={this.handleSelectedSeat}
+            handleSelectedSeat={this.handleSelectedSeat}
+            videoMuted={this.state.videoMuted}
           />
-          <Spacer />
-          <SecondWorkspace
-            firstSet={this.state.chairs.secondWorkspace.firstSet}
-            secondSet={this.state.chairs.secondWorkspace.secondSet}
-            seatSelectedId={this.state.seatSelectedId}
+          <Workspace
+            firstSet={chairsData.secondWorkspace.firstSet}
+            secondSet={chairsData.secondWorkspace.secondSet}
+            workspaceDirection='row'
+            chairsDirection='column'
+            tableSrc="Table-90.png"
+            selectedSeatId={this.state.selectedSeatId}
             localParticipantTracks={localParticipantTracks}
             identity={this.props.identity}
             handleSeatReset={this.handleSeatReset}
-            handleSelectSeat={this.handleSelectedSeat}
+            handleSelectedSeat={this.handleSelectedSeat}
+            videoMuted={this.state.videoMuted}
           />
           {/* Stream Buttons */}
         </Flex>
         <Flex
-          bg="blue.400"
+          //bg="blue.400"
           direction="row"
           align="center"
           justify="space-evenly"
         >
-          {streamButtons.map((name) => (
-            <Flex
-              h={20}
-              w={20}
-              border="1px"
-              borderColor="gray.900"
-              rounded={100}
-              justify="center"
-              align="center"
-              onClick={this.toggleVideoMute}
-            >
-              {name}
-              {/* <Image h={7} w={7} src={name} alt={name} /> */}
-            </Flex>
-          ))}
+          <StreamButtons toggleVideoMute={this.toggleVideoMute} streamButtons={streamButtons} />
 
           <Button onClick={this.props.returnToLobby}>Lobby</Button>
         </Flex>

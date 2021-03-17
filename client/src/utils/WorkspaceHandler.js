@@ -8,7 +8,9 @@ const WorkspaceHandler = ({
   localParticipantTracks,
   handleSelectedSeat,
   identity,
+  videoMuted
 }) => {
+  console.log('selected seat from workspace handler', selectedSeatId)
   return (
     <>
       {Object.keys(chairs).map((chair) => (
@@ -16,7 +18,7 @@ const WorkspaceHandler = ({
           selectedSeatId={selectedSeatId}
           chairId={chairs[chair].id}
           orientation={chairs[chair].orientation}
-          isVideoMuted={true} // this should be muted by default?
+          videoMuted={videoMuted} // this should be muted by default?
           handleSeatReset={handleSeatReset}
           identity={identity}
           handleSelectedSeat={handleSelectedSeat}

@@ -1,30 +1,32 @@
-import { Flex, Spacer, Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import WorkspaceHandler from "../utils/WorkspaceHandler";
 import { Table } from "./Table";
 
-// first workspace
-export const FirstWorkspace = ({
+export const Workspace = ({
   firstSet,
   secondSet,
+  workspaceDirection,
+  chairsDirection,
+  tableSrc,
   selectedSeatId,
   localParticipantTracks,
   identity,
   handleSeatReset,
   handleSelectedSeat,
+  videoMuted
 }) => {
   return (
-    <Box>
       <Flex
-        bg="gray.400"
-        direction="column"
+        // bg="gray.400"
+        direction={workspaceDirection}
         w="100%"
         h="50vh"
         align="center"
         justify="space-evenly"
       >
         <Flex
-          bg="yellow.400"
-          direction="row"
+          //bg="yellow.400"
+          direction={chairsDirection}
           w="100%"
           h="60vh"
           align="center"
@@ -37,12 +39,15 @@ export const FirstWorkspace = ({
             localParticipantTracks={localParticipantTracks}
             handleSelectedSeat={handleSelectedSeat}
             identity={identity}
+            videoMuted={videoMuted}
           />
         </Flex>
-        <Table direction="row" imgSrc="Table.png" />
+        <Table 
+          imgSrc={tableSrc} 
+        />
         <Flex
-          bg="yellow.400"
-          direction="row"
+          //bg="yellow.400"
+          direction={chairsDirection}
           w="100%"
           h="60vh"
           align="center"
@@ -55,9 +60,9 @@ export const FirstWorkspace = ({
             localParticipantTracks={localParticipantTracks}
             handleSelectedSeat={handleSelectedSeat}
             identity={identity}
+            videoMuted={videoMuted}
           />
         </Flex>
       </Flex>
-    </Box>
   );
 };

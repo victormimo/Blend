@@ -5,7 +5,7 @@ import { ParticipantInitialBubble } from "../components/ParticipantInitialBubble
 const ChairHandler = ({
   selectedSeatId,
   chairId,
-  isVideoMuted,
+  videoMuted,
   handleSeatReset,
   localParticipantTracks,
   handleSelectedSeat,
@@ -13,7 +13,7 @@ const ChairHandler = ({
   identity,
 }) => {
   return selectedSeatId === chairId ? (
-    isVideoMuted ? (
+    videoMuted ? (
       <ParticipantInitialBubble
         identity={identity}
         handleSeatReset={handleSeatReset}
