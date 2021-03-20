@@ -4,6 +4,7 @@ export const StreamButtons = ({ streamButtons, toggleVideoMute }) =>{
     return (
         streamButtons.map((name) => (
             <Flex
+              key={name}
               h={20}
               w={20}
               border="1px"

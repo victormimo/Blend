@@ -1,10 +1,14 @@
 import { Component } from "react";
 import { Flex, Button, Box, Image } from "@chakra-ui/react";
 import { Workspace } from "./Workspace";
-import chairsData from '../data/chairs'
+import chairsData from "../data/chairs";
 import { StreamButtons } from "./StreamButtons";
 
-const streamButtons = ["camera-icon.png", "mic-icon.png", "share-screen-icon.png"];
+const streamButtons = [
+  "camera-icon.png",
+  "mic-icon.png",
+  "share-screen-icon.png",
+];
 
 export class Office extends Component {
   constructor(props) {
@@ -12,6 +16,7 @@ export class Office extends Component {
 
     this.state = {
       selectedSeatId: null,
+      // localParticipantSelectedSeatId: null,
       videoMuted: true,
       audioMuted: true,
       remoteParticipants: Array.from(this.props.room.participants.values()),
@@ -82,11 +87,7 @@ export class Office extends Component {
   render() {
     console.log("room obj", this.props.room);
     console.log("local participant", this.props.room.localParticipant);
-    console.log(
-      "audio track",
-      Array.from(this.props.room.localParticipant.audioTracks)
-    );
-    console.log('selected id', this.state.selectedSeatId)
+    console.log("remote participants", this.state.remoteParticipants);
 
     const localParticipantExistingPubs = Array.from(
       this.props.room.localParticipant.tracks.values()
@@ -117,11 +118,12 @@ export class Office extends Component {
           align="center"
           justify="center"
         >
+          {console.log("chairs data", chairsData.firstWorkspace.firstSet)}
           <Workspace
             firstSet={chairsData.firstWorkspace.firstSet}
             secondSet={chairsData.firstWorkspace.secondSet}
-            workspaceDirection='column'
-            chairsDirection='row'
+            workspaceDirection="column"
+            chairsDirection="row"
             tableSrc="Table.png"
             selectedSeatId={this.state.selectedSeatId}
             localParticipantTracks={localParticipantTracks}
@@ -133,8 +135,8 @@ export class Office extends Component {
           <Workspace
             firstSet={chairsData.secondWorkspace.firstSet}
             secondSet={chairsData.secondWorkspace.secondSet}
-            workspaceDirection='row'
-            chairsDirection='column'
+            workspaceDirection="row"
+            chairsDirection="column"
             tableSrc="Table-90.png"
             selectedSeatId={this.state.selectedSeatId}
             localParticipantTracks={localParticipantTracks}
@@ -143,7 +145,6 @@ export class Office extends Component {
             handleSelectedSeat={this.handleSelectedSeat}
             videoMuted={this.state.videoMuted}
           />
-          {/* Stream Buttons */}
         </Flex>
         <Flex
           //bg="blue.400"
@@ -151,7 +152,10 @@ export class Office extends Component {
           align="center"
           justify="space-evenly"
         >
-          <StreamButtons toggleVideoMute={this.toggleVideoMute} streamButtons={streamButtons} />
+          <StreamButtons
+            toggleVideoMute={this.toggleVideoMute}
+            streamButtons={streamButtons}
+          />
 
           <Button onClick={this.props.returnToLobby}>Lobby</Button>
         </Flex>

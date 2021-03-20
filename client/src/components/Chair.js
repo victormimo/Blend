@@ -14,7 +14,7 @@ export class Chair extends Component{
   }
 
   render(){
-    const { orientation} = this.props
+    const { orientation } = this.props
 
       if (orientation === "right") {
         return (
