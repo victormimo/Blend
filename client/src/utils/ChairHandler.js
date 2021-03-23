@@ -1,6 +1,6 @@
-import { Track } from "../components/Track";
-import { Chair } from "../components/Chair";
-import { ParticipantInitialBubble } from "../components/ParticipantInitialBubble";
+import Track from "../components/Track";
+import Chair from "../components/Chair/ChairWrapper";
+import ParticipantInitialBubble from "../components/ParticipantInitialBubble";
 
 const ChairHandler = ({
   selectedSeatId,

@@ -1,22 +1,18 @@
 import { Box } from "@chakra-ui/react";
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 
-export class Track extends Component {
-  constructor(props) {
-    super(props);
+const Track = ({ track }) => {
+  const ref = React.createRef();
 
-    this.ref = React.createRef();
-  }
-
-  componentDidMount() {
-    if (this.props.track !== null) {
-      const child = this.props.track.attach();
-      this.ref.current.classList.add(this.props.track.kind);
-      this.ref.current.appendChild(child);
+  useEffect(() => {
+    if (track !== null) {
+      const child = track.attach();
+      ref.current.classList.add(track.kind);
+      ref.current.appendChild(child);
     }
-  }
+  }, [ref, track]);
 
-  render() {
-    return <Box ref={this.ref}></Box>;
-  }
-}
+  return <Box ref={ref} />;
+};
+
+export default Track;

@@ -1,5 +1,4 @@
 import ChairHandler from "./ChairHandler";
-import { Flex } from "@chakra-ui/react";
 
 const WorkspaceHandler = ({
   chairs,
@@ -10,11 +9,11 @@ const WorkspaceHandler = ({
   identity,
   videoMuted
 }) => {
-  console.log('selected seat from workspace handler', selectedSeatId)
   return (
     <>
       {Object.keys(chairs).map((chair) => (
         <ChairHandler
+          key={chairs[chair].id}
           selectedSeatId={selectedSeatId}
           chairId={chairs[chair].id}
           orientation={chairs[chair].orientation}
