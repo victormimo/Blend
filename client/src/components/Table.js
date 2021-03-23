@@ -1,9 +1,8 @@
 import { Flex, Image } from "@chakra-ui/react";
 
-export const Table = ({ direction, imgSrc }) => {
+export const Table = ({ imgSrc }) => {
   return (
     <Flex
-      direction={direction}
       w="100%"
       h="50vh"
       align="center"

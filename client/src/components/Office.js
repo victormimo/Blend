@@ -1,25 +1,25 @@
-import React, { Component } from "react";
-import { Spacer, Flex, Button, Box, Image } from "@chakra-ui/react";
-import { Table } from "./Table";
-import { Chair } from "./Chair";
-import { ParticipantInitialBubble } from "./ParticipantInitialBubble";
-import { Track } from "./Track";
+import { Component } from "react";
+import { Flex, Button, Box, Image } from "@chakra-ui/react";
+import { Workspace } from "./Workspace";
+import chairsData from '../data/chairs'
+import { StreamButtons } from "./StreamButtons";
 
-const streamButtons = ["video-icon.png", "audio-icon.png", "share-screen.png"];
+const streamButtons = ["camera-icon.png", "mic-icon.png", "share-screen-icon.png"];
 
 export class Office extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      seatSelected: false,
+      selectedSeatId: null,
       videoMuted: true,
       audioMuted: true,
       remoteParticipants: Array.from(this.props.room.participants.values()),
     };
 
+    this.handleSeatReset = this.handleSeatReset.bind(this);
     this.leaveRoom = this.leaveRoom.bind(this);
-    this.handleSelectSeat = this.handleSelectSeat.bind(this);
+    this.handleSelectedSeat = this.handleSelectedSeat.bind(this);
     this.toggleVideoMute = this.toggleVideoMute.bind(this);
   }
 
@@ -40,10 +40,14 @@ export class Office extends Component {
     this.leaveRoom();
   }
 
-  handleSelectSeat() {
-    this.setState({
-      seatSelected: !this.state.seatSelected,
-    });
+  handleSelectedSeat(id) {
+    console.log("chair selected!", id);
+    this.setState({ selectedSeatId: id });
+  }
+
+  handleSeatReset() {
+    console.log("seat resetted");
+    this.setState({ selectedSeatId: null });
   }
 
   toggleVideoMute() {
@@ -75,14 +79,6 @@ export class Office extends Component {
     this.props.returnToLobby();
   }
 
-  createChairs(number, orientation, handleSelectSeat) {
-    const chairArr = [];
-    for (let i = 0; i < number; i++) {
-      chairArr.push(Chair({ orientation, handleSelectSeat }));
-    }
-    return chairArr;
-  }
-
   render() {
     console.log("room obj", this.props.room);
     console.log("local participant", this.props.room.localParticipant);
@@ -90,12 +86,13 @@ export class Office extends Component {
       "audio track",
       Array.from(this.props.room.localParticipant.audioTracks)
     );
+    console.log('selected id', this.state.selectedSeatId)
 
     const localParticipantExistingPubs = Array.from(
       this.props.room.localParticipant.tracks.values()
     );
 
-    // track takes the track from the publication, publication is the higher step
+    // // track takes the track from the publication, publication is the higher step
     const localParticipantTracks = localParticipantExistingPubs.map(
       (pub) => pub.track
     );
@@ -110,141 +107,54 @@ export class Office extends Component {
       });
     }
 
-    // chair with all functionality
-    let hookedChair = [];
-    if (!this.state.videoMuted && this.state.seatSelected) {
-      hookedChair = localParticipantTracks.map((track) => (
-        <Track key={track} track={track} />
-      ));
-    } else if (this.state.seatSelected) {
-      hookedChair[0] = (
-        <ParticipantInitialBubble
-          identity={this.props.identity}
-          handleSelectedSeat={this.handleSelectSeat}
-        />
-      );
-    } else {
-      hookedChair[0] = (
-        <Chair orientation="down" handleSelectedSeat={this.handleSelectSeat} />
-      );
-    }
-
     return (
       <Box>
         <Flex
           bg="gray.100"
           direction="row"
           w="100%"
-          h="100vh"
+          h="75vh"
           align="center"
           justify="center"
         >
-          <Spacer />
-          <Flex
-            direction="column"
-            w="40%"
-            h="50vh"
-            align="center"
-            justify="space-evenly"
-          >
-            <Flex
-              direction="row"
-              w="100%"
-              h="50vh"
-              align="center"
-              justify="space-evenly"
-            >
-              {/* {this.createChairs(3, "down", this.handleSelectSeat)} */}
-              {hookedChair.map((el) => (
-                <div>{el}</div>
-              ))}
-
-              {/* for curiosity lets test its disabled */}
-              {localParticipantTracks.map((track) => (
-                <Track key={track} track={track} />
-              ))}
-
-              {/* 
-              {this.state.seatSelected ? (
-                <ParticipantInitialBubble
-                  identity={this.props.identity}
-                  handleSelectedSeat={this.handleSelectSeat}
-                />
-              ) : (
-                <Chair
-                  orientation="down"
-                  handleSelectedSeat={this.handleSelectSeat}
-                />
-              )} */}
-
-              {/* {Array(3)
-                .fill(1)
-                .map((n, i) => (
-                  <Chair
-                    orientation="down"
-                    handleSelectedSeat={this.handleSelectSeat}
-                  />
-                ))} */}
-            </Flex>
-            <Table direction="row" imgSrc="Table.png" />
-            <Flex
-              direction="row"
-              w="100%"
-              h="50vh"
-              align="center"
-              justify="space-evenly"
-            >
-              {this.createChairs(3, "up")}
-            </Flex>
-          </Flex>
-          <Spacer />
-
-          <Flex
-            direction="row"
-            w="40%"
-            h="60vh"
-            align="center"
-            justify="space-evenly"
-          >
-            <Flex
-              direction="column"
-              w="100%"
-              h="60vh"
-              align="center"
-              justify="space-evenly"
-            >
-              {this.createChairs(4, "left")}
-            </Flex>
-            <Table direction="column" imgSrc="Table-90.png" />
-            <Flex
-              direction="column"
-              w="100%"
-              h="60vh"
-              align="center"
-              justify="space-evenly"
-            >
-              {this.createChairs(4, "right")}
-            </Flex>
-          </Flex>
-          <Spacer />
+          <Workspace
+            firstSet={chairsData.firstWorkspace.firstSet}
+            secondSet={chairsData.firstWorkspace.secondSet}
+            workspaceDirection='column'
+            chairsDirection='row'
+            tableSrc="Table.png"
+            selectedSeatId={this.state.selectedSeatId}
+            localParticipantTracks={localParticipantTracks}
+            identity={this.props.identity}
+            handleSeatReset={this.handleSeatReset}
+            handleSelectedSeat={this.handleSelectedSeat}
+            videoMuted={this.state.videoMuted}
+          />
+          <Workspace
+            firstSet={chairsData.secondWorkspace.firstSet}
+            secondSet={chairsData.secondWorkspace.secondSet}
+            workspaceDirection='row'
+            chairsDirection='column'
+            tableSrc="Table-90.png"
+            selectedSeatId={this.state.selectedSeatId}
+            localParticipantTracks={localParticipantTracks}
+            identity={this.props.identity}
+            handleSeatReset={this.handleSeatReset}
+            handleSelectedSeat={this.handleSelectedSeat}
+            videoMuted={this.state.videoMuted}
+          />
+          {/* Stream Buttons */}
         </Flex>
-        {/* Stream Buttons */}
-        {streamButtons.map((name) => (
-          <Flex
-            h={20}
-            w={20}
-            border="1px"
-            borderColor="gray.900"
-            rounded={100}
-            justify="center"
-            align="center"
-            onClick={this.toggleVideoMute}
-          >
-            <Image h={7} w={7} src={name} alt={name} />
-          </Flex>
-        ))}
+        <Flex
+          //bg="blue.400"
+          direction="row"
+          align="center"
+          justify="space-evenly"
+        >
+          <StreamButtons toggleVideoMute={this.toggleVideoMute} streamButtons={streamButtons} />
 
-        <Button onClick={this.props.returnToLobby}>Lobby</Button>
+          <Button onClick={this.props.returnToLobby}>Lobby</Button>
+        </Flex>
       </Box>
     );
   }
