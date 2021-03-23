@@ -1,5 +1,4 @@
 import ChairHandler from "./ChairHandler";
-import { Flex } from "@chakra-ui/react";
 
 const WorkspaceHandler = ({
   chairs,

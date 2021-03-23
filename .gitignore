@@ -6,6 +6,9 @@
 /.pnp
 .pnp.js
 
+**/firebaseServiceAccount.json
+**/firebaseConfig.json
+
 # testing
 /coverage
 

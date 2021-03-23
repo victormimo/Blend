@@ -1,165 +1,146 @@
-import { Component } from "react";
-import { Flex, Button, Box, Image } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Flex, Button, Box } from "@chakra-ui/react";
 import { Workspace } from "./Workspace";
 import chairsData from "../data/chairs";
-import { StreamButtons } from "./StreamButtons";
+import { StreamButtons, streamButtonNames } from "./StreamButtons";
 
-const streamButtons = [
-  "camera-icon.png",
-  "mic-icon.png",
-  "share-screen-icon.png",
-];
+const Office = ({ room, returnToLobby, identity }) => {
+  const [selectedSeatId, handleSelectedSeatId] = useState(null);
+  const [videoMuted, handleVideoMuted] = useState(true);
+  // const [audioMuted, handleAudioMuted] = useState(true);
+  const [remoteParticipants, handleRemoteParticipants] = useState(
+    room.participants.values()
+  );
 
-export class Office extends Component {
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    // add event listeners for future remote participants coming or going
+    room.on("participantConnected", (participant) =>
+      addParticipant(participant)
+    );
+    room.on("participantDisconnected", (participant) =>
+      removeParticipant(participant)
+    );
 
-    this.state = {
-      selectedSeatId: null,
-      // localParticipantSelectedSeatId: null,
-      videoMuted: true,
-      audioMuted: true,
-      remoteParticipants: Array.from(this.props.room.participants.values()),
+    window.addEventListener("beforeunload", leaveRoom);
+
+    return () => {
+      console.log("got here on unmount");
+      leaveRoom();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    this.handleSeatReset = this.handleSeatReset.bind(this);
-    this.leaveRoom = this.leaveRoom.bind(this);
-    this.handleSelectedSeat = this.handleSelectedSeat.bind(this);
-    this.toggleVideoMute = this.toggleVideoMute.bind(this);
-  }
-
-  componentDidMount() {
-    // Add event listeners for future remote participants coming or going
-    this.props.room.on("participantConnected", (participant) =>
-      this.addParticipant(participant)
-    );
-    this.props.room.on("participantDisconnected", (participant) =>
-      this.removeParticipant(participant)
-    );
-
-    // is below needed if we have componentWillUnmount?
-    window.addEventListener("beforeunload", this.leaveRoom);
-  }
-
-  componentWillUnmount() {
-    this.leaveRoom();
-  }
-
-  handleSelectedSeat(id) {
-    console.log("chair selected!", id);
-    this.setState({ selectedSeatId: id });
-  }
-
-  handleSeatReset() {
-    console.log("seat resetted");
-    this.setState({ selectedSeatId: null });
-  }
-
-  toggleVideoMute() {
-    this.setState({
-      videoMuted: !this.state.videoMuted,
-    });
-  }
-
-  addParticipant(participant) {
+  const addParticipant = (participant) => {
     console.log(`${participant.identity} has joined the room.`);
+    handleRemoteParticipants([...remoteParticipants, participant]);
+  };
 
-    this.setState({
-      remoteParticipants: [...this.state.remoteParticipants, participant],
-    });
-  }
-
-  removeParticipant(participant) {
+  const removeParticipant = (participant) => {
     console.log(`${participant.identity} has left the room`);
 
-    this.setState({
-      remoteParticipants: this.state.remoteParticipants.filter(
-        (p) => p.identity !== participant.identity
-      ),
+    // convert this
+    // this.setState({
+    //   remoteParticipants: this.state.remoteParticipants.filter(
+    //     (p) => p.identity !== participant.identity
+    //   ),
+    // });
+  };
+
+  const handleSelectedSeat = (id) => {
+    console.log("chair selected!", id);
+    handleSelectedSeatId(id);
+  };
+
+  const handleSeatReset = () => {
+    console.log("chair resetted!");
+    handleSelectedSeatId(null);
+  };
+
+  const toggleVideoMute = () => {
+    handleVideoMuted(!videoMuted);
+  };
+
+  const leaveRoom = () => {
+    room.disconnect();
+    returnToLobby();
+  };
+
+  console.log("room obj", room);
+  console.log("local participant", room.localParticipant);
+  console.log("remote participants", remoteParticipants);
+
+  const localParticipantExistingPubs = Array.from(
+    room.localParticipant.tracks.values()
+  );
+
+  // // track takes the track from the publication, publication is the higher step
+  const localParticipantTracks = localParticipantExistingPubs.map(
+    (pub) => pub.track
+  );
+
+  if (videoMuted) {
+    room.localParticipant.videoTracks.forEach((pub) => {
+      pub.track.disable();
+    });
+  } else if (!videoMuted) {
+    room.localParticipant.videoTracks.forEach((pub) => {
+      pub.track.enable();
     });
   }
 
-  leaveRoom() {
-    this.props.room.disconnect();
-    this.props.returnToLobby();
-  }
+  return (
+    <Box>
+      <Flex
+        bg="gray.100"
+        direction="row"
+        w="100%"
+        h="75vh"
+        align="center"
+        justify="center"
+      >
+        {console.log("chairs data", chairsData.firstWorkspace.firstSet)}
+        <Workspace
+          firstSet={chairsData.firstWorkspace.firstSet}
+          secondSet={chairsData.firstWorkspace.secondSet}
+          workspaceDirection="column"
+          chairsDirection="row"
+          tableSrc="Table.png"
+          selectedSeatId={selectedSeatId}
+          localParticipantTracks={localParticipantTracks}
+          identity={identity}
+          handleSeatReset={handleSeatReset}
+          handleSelectedSeat={handleSelectedSeat}
+          videoMuted={videoMuted}
+        />
+        <Workspace
+          firstSet={chairsData.secondWorkspace.firstSet}
+          secondSet={chairsData.secondWorkspace.secondSet}
+          workspaceDirection="row"
+          chairsDirection="column"
+          tableSrc="Table-90.png"
+          selectedSeatId={selectedSeatId}
+          localParticipantTracks={localParticipantTracks}
+          identity={identity}
+          handleSeatReset={handleSeatReset}
+          handleSelectedSeat={handleSelectedSeat}
+          videoMuted={videoMuted}
+        />
+      </Flex>
+      <Flex
+        //bg="blue.400"
+        direction="row"
+        align="center"
+        justify="space-evenly"
+      >
+        <StreamButtons
+          toggleVideoMute={toggleVideoMute}
+          streamButtons={streamButtonNames}
+        />
 
-  render() {
-    console.log("room obj", this.props.room);
-    console.log("local participant", this.props.room.localParticipant);
-    console.log("remote participants", this.state.remoteParticipants);
+        <Button onClick={returnToLobby}>Lobby</Button>
+      </Flex>
+    </Box>
+  );
+};
 
-    const localParticipantExistingPubs = Array.from(
-      this.props.room.localParticipant.tracks.values()
-    );
-
-    // // track takes the track from the publication, publication is the higher step
-    const localParticipantTracks = localParticipantExistingPubs.map(
-      (pub) => pub.track
-    );
-
-    if (this.state.videoMuted) {
-      this.props.room.localParticipant.videoTracks.forEach((pub) => {
-        pub.track.disable();
-      });
-    } else if (!this.state.videoMuted) {
-      this.props.room.localParticipant.videoTracks.forEach((pub) => {
-        pub.track.enable();
-      });
-    }
-
-    return (
-      <Box>
-        <Flex
-          bg="gray.100"
-          direction="row"
-          w="100%"
-          h="75vh"
-          align="center"
-          justify="center"
-        >
-          {console.log("chairs data", chairsData.firstWorkspace.firstSet)}
-          <Workspace
-            firstSet={chairsData.firstWorkspace.firstSet}
-            secondSet={chairsData.firstWorkspace.secondSet}
-            workspaceDirection="column"
-            chairsDirection="row"
-            tableSrc="Table.png"
-            selectedSeatId={this.state.selectedSeatId}
-            localParticipantTracks={localParticipantTracks}
-            identity={this.props.identity}
-            handleSeatReset={this.handleSeatReset}
-            handleSelectedSeat={this.handleSelectedSeat}
-            videoMuted={this.state.videoMuted}
-          />
-          <Workspace
-            firstSet={chairsData.secondWorkspace.firstSet}
-            secondSet={chairsData.secondWorkspace.secondSet}
-            workspaceDirection="row"
-            chairsDirection="column"
-            tableSrc="Table-90.png"
-            selectedSeatId={this.state.selectedSeatId}
-            localParticipantTracks={localParticipantTracks}
-            identity={this.props.identity}
-            handleSeatReset={this.handleSeatReset}
-            handleSelectedSeat={this.handleSelectedSeat}
-            videoMuted={this.state.videoMuted}
-          />
-        </Flex>
-        <Flex
-          //bg="blue.400"
-          direction="row"
-          align="center"
-          justify="space-evenly"
-        >
-          <StreamButtons
-            toggleVideoMute={this.toggleVideoMute}
-            streamButtons={streamButtons}
-          />
-
-          <Button onClick={this.props.returnToLobby}>Lobby</Button>
-        </Flex>
-      </Box>
-    );
-  }
-}
+export default Office;
