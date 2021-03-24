@@ -1,7 +1,7 @@
-const streamButtonsName = [
+const streamButtonNames = [
   "camera-icon.png",
   "mic-icon.png",
   "share-screen-icon.png",
 ];
 
-export default streamButtonsName;
+export default streamButtonNames;
