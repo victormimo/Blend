@@ -13,7 +13,7 @@ const ParticipantInitialBubble = ({ handleSeatReset, identity }) => {
       align="center"
       onClick={handleSeatReset}
     >
-      {identity.charAt(0)}
+      {identity.charAt(0).toUpperCase()}
     </Flex>
   );
 };

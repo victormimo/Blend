@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { Box } from "@chakra-ui/react";
-import { Track } from "./Tracks";
+import Track from "./Tracks";
 
 // ignored as we are not yet introducing remote participants
 

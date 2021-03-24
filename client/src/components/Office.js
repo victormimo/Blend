@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Flex, Button, Box } from "@chakra-ui/react";
-import { Workspace } from "./Workspace";
+import Workspace from "./Workspace";
 import chairsData from "../data/chairs";
 import { StreamButtons, streamButtonNames } from "./StreamButtons";
 
@@ -11,24 +11,6 @@ const Office = ({ room, returnToLobby, identity }) => {
   const [remoteParticipants, handleRemoteParticipants] = useState(
     room.participants.values()
   );
-
-  useEffect(() => {
-    // add event listeners for future remote participants coming or going
-    room.on("participantConnected", (participant) =>
-      addParticipant(participant)
-    );
-    room.on("participantDisconnected", (participant) =>
-      removeParticipant(participant)
-    );
-
-    window.addEventListener("beforeunload", leaveRoom);
-
-    return () => {
-      console.log("got here on unmount");
-      leaveRoom();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const addParticipant = (participant) => {
     console.log(`${participant.identity} has joined the room.`);
@@ -45,6 +27,27 @@ const Office = ({ room, returnToLobby, identity }) => {
     //   ),
     // });
   };
+  const leaveRoom = () => {
+    room.disconnect();
+    returnToLobby();
+  };
+
+  useEffect(() => {
+    // add event listeners for future remote participants coming or going
+    room.on("participantConnected", (participant) =>
+      addParticipant(participant)
+    );
+    room.on("participantDisconnected", (participant) =>
+      removeParticipant(participant)
+    );
+
+    window.addEventListener("beforeunload", leaveRoom);
+
+    return () => {
+      leaveRoom();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSelectedSeat = (id) => {
     console.log("chair selected!", id);
@@ -58,11 +61,6 @@ const Office = ({ room, returnToLobby, identity }) => {
 
   const toggleVideoMute = () => {
     handleVideoMuted(!videoMuted);
-  };
-
-  const leaveRoom = () => {
-    room.disconnect();
-    returnToLobby();
   };
 
   console.log("room obj", room);
