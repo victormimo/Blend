@@ -1,9 +1,0 @@
-{
-    "apiKey": "AIzaSyBHNxsEGWe5j4ROVh8WMFNIlgrWgEibfUA",
-    authDomain: "newagent-a14ff.firebaseapp.com",
-    databaseURL: "https://newagent-a14ff.firebaseio.com",
-    projectId: "newagent-a14ff",
-    storageBucket: "newagent-a14ff.appspot.com",
-    messagingSenderId: "643988460707",
-    appId: "1:643988460707:web:757105a1b35d47c62bdb16"
-};
