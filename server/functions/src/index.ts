@@ -1,11 +1,6 @@
 import * as functions from "firebase-functions";
-import * as dotenv from "dotenv";
-import { jwt } from "twilio";
-const { AccessToken } = jwt;
-const { VideoGrant } = AccessToken;
 import createAndGetTwilloRoomJWT from "./createAccessToken";
 import { parseRequestQueryParams } from "./utils";
-dotenv.config();
 
 export const getRoomToken = functions.https.onRequest((req, res) => {
   try {

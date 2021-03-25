@@ -34,4 +34,5 @@ const createNewVideoGrant = (room: string) => {
 const getTokenJWT = (token: any) => ({
   tokenString: token.toJwt(),
 });
+
 export default createAndGetTwilloRoomJWT;
