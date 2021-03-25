@@ -4,10 +4,15 @@ import cors from "cors";
 import {jwt} from "twilio";
 const {AccessToken} = jwt;
 const {VideoGrant} = AccessToken;
-import {config} from "dotenv";
+import * as dotenv from "dotenv";
 import express, {Response, Request} from "express";
+import * as admin from "firebase-admin";
 
-config();
+// initialize firebase inorder to access its services
+admin.initializeApp(functions.config().firebase);
+
+// setting up dotenv parser
+dotenv.config();
 
 const app = express();
 
@@ -16,12 +21,14 @@ const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || "";
 const twilioApiKeySID = process.env.TWILIO_API_KEY_SID || "";
 const twilioApiKeySecret = process.env.TWILIO_API_KEY_SECRET || "";
 
-exports.addRoom = functions.https.onRequest(app);
+// exports.addRoom = functions.https.onRequest(app);
 
 app.get("/token", cors(), (req: Request, res: Response) => {
   const identity = req.query.identity as string;
   const roomName = req.query.roomName as string;
+
   console.log(`identity ${identity}, roomName ${roomName}`);
+
   const token = new AccessToken(
       twilioAccountSid,
       twilioApiKeySID,
@@ -30,7 +37,7 @@ app.get("/token", cors(), (req: Request, res: Response) => {
         ttl: MAX_ALLOWED_SESSION_DURATION,
       }
   );
-  token.identity = identity;
+
   token.identity = identity;
   const videoGrant = new VideoGrant({room: roomName});
   token.addGrant(videoGrant);
@@ -38,6 +45,9 @@ app.get("/token", cors(), (req: Request, res: Response) => {
   const tokenJwt = token.toJwt();
   const dataToSend = {tokenString: tokenJwt};
 
-  res.send(dataToSend);
   console.log(`issued token for ${identity} in room ${roomName}`);
+  res.send(dataToSend);
 });
+
+// define google cloud function name
+export const webApi = functions.https.onRequest(app);
