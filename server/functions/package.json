@@ -8,13 +8,14 @@
         "start": "npm run shell",
         "deploy": "firebase deploy --only functions",
         "logs": "firebase functions:log",
-        "flighcheck": "yarn run lint --fix && yarn run build"
+        "flightcheck": "yarn run lint --fix && yarn run build"
     },
     "engines": {
         "node": "12"
     },
     "main": "lib/index.js",
     "dependencies": {
+        "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "firebase-admin": "^9.2.0",
         "firebase-functions": "^3.11.0",
