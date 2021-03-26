@@ -3,10 +3,8 @@ import { Flex, Box, Input, Button } from "@chakra-ui/react";
 import Office from "./components/Office";
 import { connect } from "twilio-video";
 import "firebase/functions";
-import firebase from "firebase";
-
+import { getRoomToken } from "./services";
 // Initialize Cloud Functions through Firebase
-const functions = firebase.functions();
 
 const App = () => {
   const [identity, handleIdentity] = useState("");
@@ -23,14 +21,12 @@ const App = () => {
   };
 
   const handleJoinRoom = async () => {
-    const getRoomToken = functions.httpsCallable("getRoomToken");
     // await fetch(
     //   // `http://localhost:8081/token?identity=${identity}`
     //   `https://us-central1-newagent-a14ff.cloudfunctions.net/getRoomToken?identity=${identity}`
     // );
 
-    const responseData = await getRoomToken({ identity, room: "cool-room" });
-    const { tokenString } = responseData.data;
+    const { tokenString } = await getRoomToken({ identity, room: "cool-room" });
 
     const room = await connect(tokenString, {
       name: "cool-room",
