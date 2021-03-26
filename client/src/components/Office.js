@@ -7,7 +7,7 @@ import { useList } from "react-firebase-hooks/database";
 
 const OFFICE_ID = "aaeb4cf4-67gg-11eb-8dcd-0242ac130003";
 const USER_ID = "123412";
-const OFFICE_PATH = `/workspaces`;
+const OFFICE_BASE_PATH = `offices/${OFFICE_ID}`;
 
 const Office = ({ room, returnToLobby, identity }) => {
   const [selectedSeatId, handleSelectedSeatId] = useState(null);
@@ -18,8 +18,12 @@ const Office = ({ room, returnToLobby, identity }) => {
     room.participants.values()
   );
   // this office ID will be fetched from the user object on signin
-  const currentOfficeRef = firebase.database().ref(`offices/${OFFICE_ID}`);
+  const currentOfficeRef = firebase.database().ref(OFFICE_BASE_PATH);
   const [snapshot, loading, error] = useList(currentOfficeRef);
+
+  // snapshot.map((v) => {
+  //   console.log("each val", v.val());
+  // });
 
   useEffect(() => {
     // add event listeners for future remote participants coming or going
@@ -36,7 +40,7 @@ const Office = ({ room, returnToLobby, identity }) => {
       leaveRoom();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [room]);
 
   const addParticipant = (participant) => {
     console.log(`${participant.identity} has joined the room.`);
@@ -59,12 +63,15 @@ const Office = ({ room, returnToLobby, identity }) => {
     console.log("path selected!", path);
     handleSelectedSeatId(id);
     handlePathSelected(path);
+    updateFirebase(path, USER_ID);
   };
 
-  const handleSeatReset = () => {
+  const handleSeatReset = (path) => {
     console.log("chair resetted!");
+    console.log("path resetted!");
     handleSelectedSeatId(null);
     handlePathSelected(null);
+    updateFirebase(path, "");
   };
 
   const toggleVideoMute = () => {
@@ -74,6 +81,12 @@ const Office = ({ room, returnToLobby, identity }) => {
   const leaveRoom = () => {
     room.disconnect();
     returnToLobby();
+  };
+
+  // QUESTION: should this be called on useEffect on a new state change of path? should be decoupled from the previous function
+  const updateFirebase = (path, uid) => {
+    console.log("updated chair in DB!", path);
+    firebase.database().ref(path).update({ userId: uid });
   };
 
   const localParticipantExistingPubs = Array.from(
@@ -95,14 +108,6 @@ const Office = ({ room, returnToLobby, identity }) => {
     });
   }
 
-  if (selectedPath !== null) {
-    console.log("updated chair in DB!");
-    firebase
-      .database()
-      .ref(`offices/${OFFICE_ID}/${selectedPath}`)
-      .update({ userId: USER_ID });
-  }
-
   return (
     <Box>
       <Flex
@@ -118,7 +123,7 @@ const Office = ({ room, returnToLobby, identity }) => {
         {loading ? (
           <div>loading</div>
         ) : error ? (
-          <div>error</div>
+          console.log("error", error)(<div>error</div>)
         ) : (
           snapshot.map((v) => {
             const workspaces = v.val();
@@ -137,7 +142,7 @@ const Office = ({ room, returnToLobby, identity }) => {
                   firstSetKey={firstSetKey}
                   secondSet={secondSet}
                   secondSetKey={secondSetKey}
-                  path={`${OFFICE_PATH}/${workspaceKey}/chairSets`}
+                  path={`${OFFICE_BASE_PATH}/workspaces/${workspaceKey}/chairSets`}
                   workspaceDirection={workspaceData.workspaceDirection}
                   chairsDirection={workspaceData.chairsDirection}
                   selectedSeatId={selectedSeatId}
@@ -162,7 +167,6 @@ const Office = ({ room, returnToLobby, identity }) => {
           toggleVideoMute={toggleVideoMute}
           streamButtons={streamButtonNames}
         />
-
         <Button onClick={returnToLobby}>Lobby</Button>
       </Flex>
     </Box>

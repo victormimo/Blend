@@ -17,10 +17,11 @@ const WorkspaceHandler = ({
         <ChairHandler
           key={chairs[chair].id}
           path={path}
+          userId={chairs[chair].userId}
           selectedSeatId={selectedSeatId}
           chairId={chairs[chair].id}
           orientation={chairs[chair].orientation}
-          videoMuted={videoMuted} // this should be muted by default?
+          videoMuted={videoMuted}
           handleSeatReset={handleSeatReset}
           identity={identity}
           handleSelectedSeat={handleSelectedSeat}

@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 
-const ParticipantInitialBubble = ({ handleSeatReset, identity }) => {
+const ParticipantBubble = ({ handleSeatReset, identity, path }) => {
+  const handleResetting = () => handleSeatReset(path);
   return (
     <Flex
       h={20}
@@ -11,11 +12,11 @@ const ParticipantInitialBubble = ({ handleSeatReset, identity }) => {
       rounded={100}
       justify="center"
       align="center"
-      onClick={handleSeatReset}
+      onClick={handleResetting}
     >
-      {identity.charAt(0)}
+      {identity.charAt(0).toUpperCase()}
     </Flex>
   );
 };
 
-export default ParticipantInitialBubble;
+export default ParticipantBubble;
