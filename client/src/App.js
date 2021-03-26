@@ -9,7 +9,7 @@ import { getRoomToken } from "./services";
 const App = () => {
   const [identity, handleIdentity] = useState("");
   const [room, handleRoom] = useState(null);
-
+  const roomName = "cool-room";
   const disabled = identity === "" ? true : false;
 
   const handleReturnToLobby = () => {
@@ -21,15 +21,13 @@ const App = () => {
   };
 
   const handleJoinRoom = async () => {
-    // await fetch(
-    //   // `http://localhost:8081/token?identity=${identity}`
-    //   `https://us-central1-newagent-a14ff.cloudfunctions.net/getRoomToken?identity=${identity}`
-    // );
-
-    const { tokenString } = await getRoomToken({ identity, room: "cool-room" });
+    const { tokenString } = await getRoomToken({
+      identity,
+      roomName,
+    });
 
     const room = await connect(tokenString, {
-      name: "cool-room",
+      name: roomName,
       audio: true,
       video: true,
     });
