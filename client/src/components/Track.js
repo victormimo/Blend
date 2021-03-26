@@ -12,7 +12,11 @@ const Track = ({ track }) => {
     }
   }, [ref, track]);
 
-  return <Box ref={ref} />;
+  return (
+    <Box>
+      <Box ref={ref} />
+    </Box>
+  );
 };
 
 export default Track;
