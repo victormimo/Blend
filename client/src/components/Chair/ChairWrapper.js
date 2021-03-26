@@ -3,11 +3,8 @@ import DownChair from "./DownChair";
 import UpChair from "./UpChair";
 import RightChair from "./RightChair";
 
-const Chair = ({ handleSelectedSeat, id, orientation }) => {
-  const handleSelectedChair = () => {
-    console.log(`chair ID selected ${id}`);
-    handleSelectedSeat(id);
-  };
+const Chair = ({ handleSelectedSeat, id, path, orientation }) => {
+  const handleSelectedChair = () => handleSelectedSeat(id, path);
 
   if (orientation === "right") {
     return <RightChair handleSelectedChair={handleSelectedChair} />;

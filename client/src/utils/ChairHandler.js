@@ -5,6 +5,7 @@ import ParticipantInitialBubble from "../components/ParticipantInitialBubble";
 const ChairHandler = ({
   selectedSeatId,
   chairId,
+  path,
   videoMuted,
   handleSeatReset,
   localParticipantTracks,
@@ -12,10 +13,13 @@ const ChairHandler = ({
   orientation,
   identity,
 }) => {
+  // handles the logic of the chairs
+  // TODO: extend logic to render all chairs
   return selectedSeatId === chairId ? (
     videoMuted ? (
       <ParticipantInitialBubble
         identity={identity}
+        path={`${path}/${chairId}`}
         handleSeatReset={handleSeatReset}
         id={chairId}
       />
@@ -26,6 +30,7 @@ const ChairHandler = ({
     <Chair
       orientation={orientation}
       handleSelectedSeat={handleSelectedSeat}
+      path={`${path}/${chairId}`}
       id={chairId}
     />
   );

@@ -1,16 +1,25 @@
 import { useState, useEffect } from "react";
 import { Flex, Button, Box } from "@chakra-ui/react";
 import { Workspace } from "./Workspace";
-import chairsData from "../data/chairs";
 import { StreamButtons, streamButtonNames } from "./StreamButtons";
+import firebase from "firebase";
+import { useList } from "react-firebase-hooks/database";
+
+const OFFICE_ID = "aaeb4cf4-67gg-11eb-8dcd-0242ac130003";
+const USER_ID = "123412";
+const OFFICE_PATH = `/workspaces`;
 
 const Office = ({ room, returnToLobby, identity }) => {
   const [selectedSeatId, handleSelectedSeatId] = useState(null);
   const [videoMuted, handleVideoMuted] = useState(true);
+  const [selectedPath, handlePathSelected] = useState(null);
   // const [audioMuted, handleAudioMuted] = useState(true);
   const [remoteParticipants, handleRemoteParticipants] = useState(
     room.participants.values()
   );
+  // this office ID will be fetched from the user object on signin
+  const currentOfficeRef = firebase.database().ref(`offices/${OFFICE_ID}`);
+  const [snapshot, loading, error] = useList(currentOfficeRef);
 
   useEffect(() => {
     // add event listeners for future remote participants coming or going
@@ -24,7 +33,6 @@ const Office = ({ room, returnToLobby, identity }) => {
     window.addEventListener("beforeunload", leaveRoom);
 
     return () => {
-      console.log("got here on unmount");
       leaveRoom();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,14 +54,17 @@ const Office = ({ room, returnToLobby, identity }) => {
     // });
   };
 
-  const handleSelectedSeat = (id) => {
+  const handleSelectedSeat = (id, path) => {
     console.log("chair selected!", id);
+    console.log("path selected!", path);
     handleSelectedSeatId(id);
+    handlePathSelected(path);
   };
 
   const handleSeatReset = () => {
     console.log("chair resetted!");
     handleSelectedSeatId(null);
+    handlePathSelected(null);
   };
 
   const toggleVideoMute = () => {
@@ -64,10 +75,6 @@ const Office = ({ room, returnToLobby, identity }) => {
     room.disconnect();
     returnToLobby();
   };
-
-  console.log("room obj", room);
-  console.log("local participant", room.localParticipant);
-  console.log("remote participants", remoteParticipants);
 
   const localParticipantExistingPubs = Array.from(
     room.localParticipant.tracks.values()
@@ -88,6 +95,14 @@ const Office = ({ room, returnToLobby, identity }) => {
     });
   }
 
+  if (selectedPath !== null) {
+    console.log("updated chair in DB!");
+    firebase
+      .database()
+      .ref(`offices/${OFFICE_ID}/${selectedPath}`)
+      .update({ userId: USER_ID });
+  }
+
   return (
     <Box>
       <Flex
@@ -98,33 +113,44 @@ const Office = ({ room, returnToLobby, identity }) => {
         align="center"
         justify="center"
       >
-        {console.log("chairs data", chairsData.firstWorkspace.firstSet)}
-        <Workspace
-          firstSet={chairsData.firstWorkspace.firstSet}
-          secondSet={chairsData.firstWorkspace.secondSet}
-          workspaceDirection="column"
-          chairsDirection="row"
-          tableSrc="Table.png"
-          selectedSeatId={selectedSeatId}
-          localParticipantTracks={localParticipantTracks}
-          identity={identity}
-          handleSeatReset={handleSeatReset}
-          handleSelectedSeat={handleSelectedSeat}
-          videoMuted={videoMuted}
-        />
-        <Workspace
-          firstSet={chairsData.secondWorkspace.firstSet}
-          secondSet={chairsData.secondWorkspace.secondSet}
-          workspaceDirection="row"
-          chairsDirection="column"
-          tableSrc="Table-90.png"
-          selectedSeatId={selectedSeatId}
-          localParticipantTracks={localParticipantTracks}
-          identity={identity}
-          handleSeatReset={handleSeatReset}
-          handleSelectedSeat={handleSelectedSeat}
-          videoMuted={videoMuted}
-        />
+        {/* TODO: abstract this away into its own component */}
+        {/* The chair is being update locally and globally, snapshot is a listener that updates only when the database does */}
+        {loading ? (
+          <div>loading</div>
+        ) : error ? (
+          <div>error</div>
+        ) : (
+          snapshot.map((v) => {
+            const workspaces = v.val();
+
+            return Object.keys(workspaces).map((workspaceKey) => {
+              const workspaceData = workspaces[workspaceKey];
+              const chairSets = workspaceData.chairSets;
+              const firstSetKey = Object.keys(chairSets)[0];
+              const firstSet = chairSets[Object.keys(chairSets)[0]];
+              const secondSetKey = Object.keys(chairSets)[1];
+              const secondSet = chairSets[Object.keys(chairSets)[1]];
+              return (
+                <Workspace
+                  key={workspaceKey}
+                  firstSet={firstSet}
+                  firstSetKey={firstSetKey}
+                  secondSet={secondSet}
+                  secondSetKey={secondSetKey}
+                  path={`${OFFICE_PATH}/${workspaceKey}/chairSets`}
+                  workspaceDirection={workspaceData.workspaceDirection}
+                  chairsDirection={workspaceData.chairsDirection}
+                  selectedSeatId={selectedSeatId}
+                  localParticipantTracks={localParticipantTracks}
+                  identity={identity}
+                  handleSeatReset={handleSeatReset}
+                  handleSelectedSeat={handleSelectedSeat}
+                  videoMuted={videoMuted}
+                />
+              );
+            });
+          })
+        )}
       </Flex>
       <Flex
         //bg="blue.400"
