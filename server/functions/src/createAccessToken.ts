@@ -16,12 +16,12 @@ const createNewAccessToken = (identity: string) => {
   } = config;
 
   const token = new AccessToken(
-    twilioAccountSid,
-    twilioApiKeySID,
-    twilioApiKeySecret,
-    {
-      ttl: MAX_ALLOWED_SESSION_DURATION,
-    }
+      twilioAccountSid,
+      twilioApiKeySID,
+      twilioApiKeySecret,
+      {
+        ttl: MAX_ALLOWED_SESSION_DURATION,
+      }
   );
   token.identity = identity;
   return token;

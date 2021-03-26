@@ -1,8 +1,15 @@
 import * as functions from "firebase-functions";
 import createAndGetTwilloRoomJWT from "./createAccessToken";
 import { parseRequestQueryParams } from "./utils";
+import express, { json, urlencoded } from "express";
+import cors from "cors";
 
-export const getRoomToken = functions.https.onRequest((req, res) => {
+const app = express();
+app.use(cors({ origin: "*" }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
   try {
     const { identity, roomName } = parseRequestQueryParams(req);
 
@@ -16,3 +23,4 @@ export const getRoomToken = functions.https.onRequest((req, res) => {
     res.send({ success: false, error: e });
   }
 });
+export const getRoomToken = functions.https.onRequest(app);
